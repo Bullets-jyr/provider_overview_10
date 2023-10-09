@@ -39,8 +39,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('Provider 10'),
       ),
-      body: Consumer(
-        builder: (BuildContext context, Dog dog, Widget? child) {
+      body: Selector<Dog, String>(
+        selector: (BuildContext context, Dog dog) => dog.name,
+        builder: (BuildContext context, String name, Widget? child) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -53,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(height: 20.0),
                 Text(
                   // '- name: ${context.watch<Dog>().name}',
-                  '- name: ${dog.name}',
+                  '- name: $name',
                   style: TextStyle(fontSize: 20.0),
                 ),
                 SizedBox(height: 10.0),
@@ -78,20 +79,23 @@ class BreedAndAge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (_, Dog dog, __) {
-      return Column(
-        children: [
-          Text(
-            '- breed: ${dog.breed}',
-            style: TextStyle(fontSize: 20.0),
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Age(),
-        ],
-      );
-    });
+    return Selector<Dog, String>(
+      selector: (BuildContext context, Dog dog) => dog.breed,
+      builder: (_, String breed, __) {
+        return Column(
+          children: [
+            Text(
+              '- breed: $breed',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Age(),
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -102,25 +106,28 @@ class Age extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(builder: (_, Dog dog, __) {
-      return Column(
-        children: [
-          Text(
-            '- age: ${dog.age}',
-            style: TextStyle(fontSize: 20.0),
-          ),
-          SizedBox(height: 20.0),
-          ElevatedButton(
-            onPressed: () => dog.grow(),
-            child: Text(
-              'Grow',
-              style: TextStyle(
-                fontSize: 20.0,
+    return Selector<Dog, int>(
+      selector: (BuildContext context, Dog dog) => dog.age,
+      builder: (_, int age, __) {
+        return Column(
+          children: [
+            Text(
+              '- age: $age',
+              style: TextStyle(fontSize: 20.0),
+            ),
+            SizedBox(height: 20.0),
+            ElevatedButton(
+              onPressed: () => context.read<Dog>().grow(),
+              child: Text(
+                'Grow',
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
               ),
             ),
-          ),
-        ],
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 }
